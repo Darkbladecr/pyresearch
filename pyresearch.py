@@ -114,7 +114,7 @@ ws.append(['Year', options.searchTerm])
 rowNum += 1
 chartStart = rowNum
 oldestYear = min(yearlyData.keys())
-for year in range(oldestYear, 2016):
+for year in range(oldestYear, 2017):
 	if year not in yearlyData.keys():
 		yearlyData[year] = 0
 	ws.append([year, yearlyData[year]])
