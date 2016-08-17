@@ -64,6 +64,8 @@ def saveWorksheet(wb, title, data, searchTerm=None, orderedEntries=None):
 			else:
 				output.append(val)
 		ws.append(output)
+	if orderedEntries:
+		ws.auto_filter.ref = "A2:N%d" % (len(data) + 1)
 
 
 def distinctSet(records, title):

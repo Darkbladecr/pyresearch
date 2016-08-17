@@ -13,14 +13,16 @@ parser.add_option("-i", "--input", dest="input", help="Name of input file")
 parser.add_option("-a", "--all", dest="all", action="store_true", default=False, help="input directory")
 (options, args) = parser.parse_args()
 
-searchTerms = {"Brain Metastases": "Stereotactic AND (radiosurgery OR radiotherapy) AND (brain OR cranial OR cranium) AND (metastasis OR metastases)",
-	"Spinal Metastases": "Stereotactic AND (radiosurgery OR radiotherapy) AND (spine OR brainstem OR spinal cord) AND (metastasis OR metastases)",
-	"Meningioma": "Stereotactic AND (radiosurgery OR radiotherapy) AND Meningioma",
-	"Glioblastoma": "Stereotactic AND (radiosurgery OR radiotherapy) AND Glioblastoma",
-	"AVM": "Stereotactic AND (radiosurgery OR radiotherapy) AND (Ateriovenous malformation OR AVM)",
-	"Acoustic Neuroma": "Stereotactic AND (radiosurgery OR radiotherapy) AND (Acoustic neuroma OR vestibular schwanoma)",
-	"Trigeminal Neuralgia": "Stereotactic AND (radiosurgery OR radiotherapy) AND (Trigeminal Neuralgia OR Tic Douloureux)",
-	"Psychiatry": "Stereotactic AND (radiosurgery OR radiotherapy) AND (Epilepsy OR depression OR anxiety disorder OR obsessive compulsive OR obsessive compulsion)"}
+searchTerms = {
+    "Brain Metastases": "Stereotactic AND (radiosurgery OR radiotherapy) AND (brain OR cranial OR cranium) AND (metastasis OR metastases)",
+    "Spinal Metastases": "Stereotactic AND (radiosurgery OR radiotherapy) AND (spine OR brainstem OR spinal cord) AND (metastasis OR metastases)",
+    "Meningioma": "Stereotactic AND (radiosurgery OR radiotherapy) AND Meningioma",
+    "Glioblastoma": "Stereotactic AND (radiosurgery OR radiotherapy) AND Glioblastoma",
+    "AVM": "Stereotactic AND (radiosurgery OR radiotherapy) AND (Ateriovenous malformation OR AVM)",
+    "Acoustic Neuroma": "Stereotactic AND (radiosurgery OR radiotherapy) AND (Acoustic neuroma OR vestibular schwanoma)",
+    "Trigeminal Neuralgia": "Stereotactic AND (radiosurgery OR radiotherapy) AND (Trigeminal Neuralgia OR Tic Douloureux)",
+    "Psychiatry": "Stereotactic AND (radiosurgery OR radiotherapy) AND (Epilepsy OR depression OR anxiety disorder OR obsessive compulsive OR obsessive compulsion)"
+}
 
 
 def outputOverviewData(file):
@@ -67,6 +69,7 @@ def outputOverviewData(file):
 			yearlyDataCyber[year] = 0
 		ws.append([year, yearlyData[year], yearlyDataGamma[year], yearlyDataCyber[year]])
 	orderedEntries = ['Full Author Names', 'Authors', 'Publication Date', 'Title', 'Publication Type', 'Journal Title', 'Source', 'Language', 'scopusID', 'PMID', 'Citations', 'Citations in Past Year', 'Citations Rate', 'Country of Origin']
+	saveWorksheet(wb, file[12:], publications, searchTerm, orderedEntries)
 	saveWorksheet(wb, 'Gamma Knife', gammaPubs, gammaSearch, orderedEntries)
 	saveWorksheet(wb, 'Cyberknife', cyberPubs, cyberSearch, orderedEntries)
 	wb.save('%s.xlsx' % file)
