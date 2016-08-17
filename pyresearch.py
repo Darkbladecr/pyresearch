@@ -1,7 +1,5 @@
 from optparse import OptionParser
 from Bio import Entrez, Medline
-with open('config.txt', 'r') as f:
-    Entrez.email = f.readline()
 from pubmedHelpers import getPubmedIds, parsePubmed, outputYearlyData, outputPubDataScopus, outputPubDataPubmed, saveWorksheet
 from authors import outputAuthors
 from journals import outputJournals
@@ -11,6 +9,8 @@ from openpyxl import Workbook
 from openpyxl.chart import LineChart, Reference, Series
 from datetime import datetime
 from tqdm import tqdm
+with open('config.txt', 'r') as f:
+    Entrez.email = f.readline()
 
 parser = OptionParser()
 parser.add_option("-s", "--search", dest="searchTerm", help="search term")
@@ -41,7 +41,7 @@ else:
 	with tqdm(total=len(publications)) as pbar:
 		while count < len(publications):
 			query = ""
-			for id in pmids[count:count+200]:
+			for id in pmids[count:count + 200]:
 				query += " OR PMID(%s)" % id
 			query = query[4:]
 			content = searchScopus(query)
@@ -73,7 +73,7 @@ count = 0
 print('Gathering Articles citation data')
 with tqdm(total=len(scopusPublications)) as pbar:
 	while count < len(scopusPublications):
-		query = ",".join(scopusids[count:count+25])
+		query = ",".join(scopusids[count:count + 25])
 		content = citeMetadata2(query)
 		scopusCites.update(content)
 		count += 25
@@ -128,7 +128,7 @@ c1.set_categories(dates)
 c1.title = "Articles per year for search: %s" % options.searchTerm
 c1.y_axis.title = 'Number of Articles'
 c1.x_axis.title = 'Year'
-ws.add_chart(c1, "A%d" % (rowNum+5))
+ws.add_chart(c1, "A%d" % (rowNum + 5))
 
 orderedEntries = ['Full Author Names', 'Authors', 'Publication Date', 'Title', 'Publication Type', 'Journal Title', 'Source', 'Language', 'scopusID', 'PMID', 'Citations', 'Citations in Past Year', 'Citations Rate', 'Country of Origin']
 saveWorksheet(wb, 'Pubmed Stats', scopusPublications, options.searchTerm, orderedEntries)
