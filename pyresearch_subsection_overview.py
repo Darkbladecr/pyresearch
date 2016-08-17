@@ -1,16 +1,18 @@
 from optparse import OptionParser
 from Bio import Entrez
-Entrez.email = "smig88@gmail.com"
 from openpyxl import Workbook
 from pubmedHelpers import outputYearlyData, outputPubDataScopus, outputPubDataPubmed
 import numpy
 import glob
 from tqdm import tqdm
+with open('config.txt', 'r') as f:
+    Entrez.email = f.readline()
 
 parser = OptionParser()
 parser.add_option("-i", "--input", dest="input", help="Name of input file")
 parser.add_option("-a", "--all", dest="all", action="store_true", default=False, help="input directory")
 (options, args) = parser.parse_args()
+
 
 def outputOverviewData(file):
 	publications = numpy.load('%s.npy' % file)
@@ -39,11 +41,9 @@ def outputOverviewData(file):
 
 if options.all:
 	files = glob.glob("subsections/*.npy")
-	files = [f[:-4] for f in files]
+	files = [file[:-4] for file in files]
 	print(files)
 	for f in tqdm(files):
 		outputOverviewData(f)
 else:
 	outputOverviewData(options.input)
-
-

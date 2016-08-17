@@ -1,10 +1,11 @@
 from optparse import OptionParser
 from Bio import Entrez
-Entrez.email = "smig88@gmail.com"
 from openpyxl import load_workbook
 from pubmedHelpers import getPubmedIds, saveWorksheet
 import numpy
 from tqdm import tqdm
+with open('config.txt', 'r') as f:
+    Entrez.email = f.readline()
 
 parser = OptionParser()
 parser.add_option("-s", "--search", dest="searchTerm", help="search term")
@@ -34,4 +35,3 @@ saveWorksheet(wb, options.title, matched, options.searchTerm, orderedEntries)
 
 wb.save('%s.xlsx' % options.input)
 numpy.save('subsections/%s.npy' % options.title, matched)
-
