@@ -21,7 +21,7 @@ $ cd pyresearch-master
 2. Install all the python module requirements by using the command:
 `sudo pip install -r requirements.txt`
 
-3. Setup your `config.txt` file with your email address in the first line (required by PubMed's API) and the second line with your Scopus API key, which yu can get from [dev.elsevier.com](https://dev.elsevier.com/user/login). For example:
+3. Setup your `config.txt` file with your email address in the first line (required by PubMed's API) and the second line with your Scopus API key, which you can get from [dev.elsevier.com](https://dev.elsevier.com/user/login). For example:
 
 ```
 user@pyresearch.com
