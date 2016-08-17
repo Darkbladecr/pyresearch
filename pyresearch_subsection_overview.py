@@ -68,10 +68,9 @@ def outputOverviewData(file):
 		if year not in yearlyDataCyber.keys():
 			yearlyDataCyber[year] = 0
 		ws.append([year, yearlyData[year], yearlyDataGamma[year], yearlyDataCyber[year]])
-	orderedEntries = ['Full Author Names', 'Authors', 'Publication Date', 'Title', 'Publication Type', 'Journal Title', 'Source', 'Language', 'scopusID', 'PMID', 'Citations', 'Citations in Past Year', 'Citations Rate', 'Country of Origin']
-	saveWorksheet(wb, file[12:], publications, searchTerm, orderedEntries)
-	saveWorksheet(wb, 'Gamma Knife', gammaPubs, gammaSearch, orderedEntries)
-	saveWorksheet(wb, 'Cyberknife', cyberPubs, cyberSearch, orderedEntries)
+	saveWorksheet(wb, file[12:], publications, searchTerm, orderedEntries=True)
+	saveWorksheet(wb, 'Gamma Knife', gammaPubs, gammaSearch, orderedEntries=True)
+	saveWorksheet(wb, 'Cyberknife', cyberPubs, cyberSearch, orderedEntries=True)
 	wb.save('%s.xlsx' % file)
 
 if options.all:

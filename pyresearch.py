@@ -159,8 +159,7 @@ c1.y_axis.title = 'Number of Articles'
 c1.x_axis.title = 'Year'
 ws.add_chart(c1, "A%d" % (rowNum + 5))
 
-orderedEntries = ['Full Author Names', 'Authors', 'Publication Date', 'Title', 'Publication Type', 'Journal Title', 'Source', 'Language', 'scopusID', 'PMID', 'Citations', 'Citations in Past Year', 'Citations Rate', 'Country of Origin']
-saveWorksheet(wb, 'Pubmed Stats', scopusPublications, options.searchTerm, orderedEntries)
+saveWorksheet(wb, 'Pubmed Stats', scopusPublications, options.searchTerm, orderedEntries=True)
 
 authorData = outputAuthors(scopusPublications)
 saveWorksheet(wb, 'Authors', authorData)
@@ -168,7 +167,7 @@ saveWorksheet(wb, 'Authors', authorData)
 journalData = outputJournals(scopusPublications)
 saveWorksheet(wb, 'Journals', journalData)
 
-saveWorksheet(wb, 'Gamma Knife', gammaPubs, gammaSearch, orderedEntries)
-saveWorksheet(wb, 'Cyberknife', cyberPubs, cyberSearch, orderedEntries)
+saveWorksheet(wb, 'Gamma Knife', gammaPubs, gammaSearch, orderedEntries=True)
+saveWorksheet(wb, 'Cyberknife', cyberPubs, cyberSearch, orderedEntries=True)
 
 wb.save('data-%s.xlsx' % date)

@@ -43,7 +43,9 @@ def saveExcel(filename, title, data):
 	wb.save(name)
 
 
-def saveWorksheet(wb, title, data, searchTerm=None, orderedEntries=None):
+def saveWorksheet(wb, title, data, searchTerm=None, orderedEntries=False):
+	if orderedEntries is True:
+		orderedEntries = ['Full Author Names', 'Authors', 'Publication Date', 'Title', 'Publication Type', 'Journal Title', 'Source', 'Language', 'scopusID', 'PMID', 'Citations', 'Citations in Past Year', 'Citations Rate', 'Country of Origin']
 	ws = wb.create_sheet()
 	ws.title = title
 	count = 0
