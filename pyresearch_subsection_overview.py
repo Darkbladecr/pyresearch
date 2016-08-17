@@ -1,7 +1,7 @@
 from optparse import OptionParser
 from Bio import Entrez
 from openpyxl import Workbook
-from pubmedHelpers import outputYearlyData, outputPubDataScopus, outputPubDataPubmed
+from pubmedHelpers import saveWorksheet, outputYearlyData, outputPubDataScopus, outputPubDataPubmed
 import numpy
 import glob
 from tqdm import tqdm
@@ -36,7 +36,7 @@ def outputOverviewData(file):
 		if year not in yearlyData.keys():
 			yearlyData[year] = 0
 		ws.append([year, yearlyData[year]])
-
+	saveWorksheet(wb, file[12:], publications, file, orderedEntries=True)
 	wb.save('%s.xlsx' % file)
 
 if options.all:

@@ -30,8 +30,7 @@ for record in tqdm(data):
 
 print('Saving to excel')
 wb = load_workbook('%s.xlsx' % options.input)
-orderedEntries = ['Full Author Names', 'Authors', 'Publication Date', 'Title', 'Publication Type', 'Journal Title', 'Source', 'Language', 'scopusID', 'PMID', 'Citations', 'Citations in Past Year', 'Citations Rate', 'Country of Origin']
-saveWorksheet(wb, options.title, matched, options.searchTerm, orderedEntries)
+saveWorksheet(wb, options.title, matched, options.searchTerm, orderedEntries=True)
 
 wb.save('%s.xlsx' % options.input)
 numpy.save('subsections/%s.npy' % options.title, matched)

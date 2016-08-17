@@ -130,8 +130,7 @@ c1.y_axis.title = 'Number of Articles'
 c1.x_axis.title = 'Year'
 ws.add_chart(c1, "A%d" % (rowNum + 5))
 
-orderedEntries = ['Full Author Names', 'Authors', 'Publication Date', 'Title', 'Publication Type', 'Journal Title', 'Source', 'Language', 'scopusID', 'PMID', 'Citations', 'Citations in Past Year', 'Citations Rate', 'Country of Origin']
-saveWorksheet(wb, 'Pubmed Stats', scopusPublications, options.searchTerm, orderedEntries)
+saveWorksheet(wb, 'Pubmed Stats', scopusPublications, options.searchTerm, orderedEntries=True)
 
 authorData = outputAuthors(scopusPublications)
 saveWorksheet(wb, 'Authors', authorData)
