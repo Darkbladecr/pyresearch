@@ -1,0 +1,190 @@
+from urllib import urlencode
+import urllib2
+from ast import literal_eval
+import xmltodict
+import time
+import requests
+import numpy
+scopusIDPrefix = 10
+with open('config.txt', 'r') as f:
+	email = f.readline()
+	scopusAPI = f.readline()
+
+def citeCount(PMID):
+	query = urlencode({'query': 'PMID(%s)' % PMID,'field': 'citedby-count'})
+	url = 'http://api.elsevier.com/content/search/scopus?%s' % query
+	req = urllib2.Request(url)
+	req.add_header('X-ELS-APIKey', scopusAPI)
+	while True:
+		try:
+			resp = urllib2.urlopen(req)
+			content = literal_eval(resp.read())
+			if 'citedby-count' in content['search-results']['entry'][0]:
+				return int(content['search-results']['entry'][0]['citedby-count'])
+			return 0
+		except:
+			time.sleep(1)
+
+def citeMetadata(PMID, years):
+	query = urlencode({'pubmed_id': PMID, 'date': years})
+	url = 'https://api.elsevier.com/content/abstract/citations?%s' % query
+	req = urllib2.Request(url)
+	req.add_header('X-ELS-APIKey', scopusAPI)
+	req.add_header('Accept', 'text/xml')
+	content = None
+	while content is None:
+		try:
+			resp = urllib2.urlopen(req)
+			content = xmltodict.parse(resp.read())
+		except urllib2.HTTPError, e:
+			print('No citation metadata, error code - %s.') % e.code
+			if e.code == 404:
+				return {'Citations': 0, 'Citations in Past Year': 0, 'Citations Rate': 0, 'Country of Origin': 'Unknown'}
+			elif e.code == 401:
+				print('Not authenticated, check API Key or VPN connection')
+				exit(1)
+		else:
+			print('Error on Scopus API, retrying...')
+			time.sleep(1)
+	metadata = dict()
+	citations = content['abstract-citations-response']['citeColumnTotalXML']['citeCountHeader']
+	metadata['Citations'] = int(citations['grandTotal'])
+	yearCites = list()
+	for cite in citations['columnTotal']:
+		yearCites.append(int(cite))
+	metadata['Citations in Past Year'] = yearCites[-1]
+	metadata['Citations Rate'] = sum(yearCites)/len(yearCites)
+	try:
+		authid = content['abstract-citations-response']['citeInfoMatrix']['citeInfoMatrixXML']['citationMatrix']['citeInfo']['author'][0]['authid']
+		metadata['Country of Origin'] = countryOrigin(authid)
+	except:
+		metadata['Country of Origin'] = 'Unknown'
+	return metadata
+
+def countryOrigin(authorID):
+	query = urlencode({'field': 'affiliation-country'})
+	url = 'https://api.elsevier.com/content/author/author_id/%s?%s' % (authorID, query)
+	req = urllib2.Request(url)
+	req.add_header('X-ELS-APIKey', scopusAPI)
+	req.add_header('Accept', 'text/xml')
+	content = None
+	while content is None:
+		try:
+			resp = urllib2.urlopen(req)
+			content = xmltodict.parse(resp.read())
+		except urllib2.HTTPError, e:
+			print('No author metadata, error code - %s.') % e.code
+			if e.code == 404:
+				return 'Unknown'
+			elif e.code == 401:
+				print('Not authenticated, check API Key or VPN connection')
+				exit(1)
+		else:
+			print('Error on Scopus API, retrying...')
+			time.sleep(1)
+	try:
+		return content['author-retrieval-response']['affiliation-current']['affiliation-country']
+	except:
+		return 'Unknown'
+
+def searchScopus(searchTerm, start=0):
+	content = None
+	while content is None:
+		try:
+			response = requests.get(
+				url="http://api.elsevier.com/content/search/scopus",
+				params={
+					"query": searchTerm,
+					"count": "200",
+					"sort": "-citedby-count",
+					"content": "all",
+					"start": str(start)
+				},
+				headers={
+					"Accept": "application/xml",
+					"X-ELS-APIKey": scopusAPI,
+				},
+			)
+			res = xmltodict.parse(response.content)
+			content = res['search-results']['entry']
+			return res['search-results']
+		except requests.exceptions.RequestException:
+			print('HTTP Request failed')
+		except KeyError:
+			if res['service-error']['status']['statusText']:
+				print("Error:")
+				print(res['service-error']['status']['statusText'])
+				exit(1)
+			print('KeyError, retrying request:')
+		else:
+			print('Scopus Search Error, retrying...')
+
+def parseScopus(r, array):
+	pub = dict()
+	pub['Authors'] = r['dc:creator']
+	pub['Publication Date'] = r['prism:coverDisplayDate']
+	pub['Title'] = r['dc:title']
+	pub['Publication Type'] = r['subtypeDescription']
+	pub['Journal Title'] = r['prism:publicationName']
+	pub['Source'] = None
+	pub['Language'] = 'Unknown'
+	pub['scopusID'] = r['dc:identifier'][scopusIDPrefix:]
+	pub['PMID'] = r['pubmed-id']
+	try:
+		pub['Citations'] = int(r['citedby-count'])
+	except:
+		pub['Citations'] = 0
+	pub['Citations in Past Year'] = 0
+	pub['Citations Rate'] = 0
+	try:
+		pub['Country of Origin'] = r['affiliation']['affiliation-country']
+	except TypeError:
+		pub['Country of Origin'] = r['affiliation'][0]['affiliation-country']
+	except KeyError:
+		pub['Country of Origin'] = 'Unknown'
+	array.append(pub)
+
+def citeMetadata2(query):
+	content = None
+	while content is None:
+		try:
+			response = requests.get(
+				url="http://api.elsevier.com/content/abstract/citations",
+				params={
+					"scopus_id": query,
+					"date": "1938-2016"
+				},
+				headers={
+					"Accept": "application/xml",
+					"X-ELS-APIKey": scopusAPI,
+				},
+			)
+			content = xmltodict.parse(response.content)
+		except requests.exceptions.RequestException:
+			print('HTTP Request failed')
+		else:
+			pass
+			# print('Scopus Search Error, retrying...')
+	recordsCites = dict()
+	citations = content['abstract-citations-response']['citeInfoMatrix']['citeInfoMatrixXML']['citationMatrix']['citeInfo']
+	for citation in citations:
+		scopusId = citation['dc:identifier'][10:]
+		temp = dict()
+		authors = citation['author']
+		try:
+			temp['scopusAuthors'] = [a['index-name'] for a in authors]
+		except TypeError:
+			temp['scopusAuthors'] = [authors['index-name']]
+		temp['scopusID'] = citation['dc:identifier'][10:]
+		temp['Citations'] = int(citation['rowTotal'])
+		try:
+			temp['Citations in Past Year'] = int(citation['cc'][-1])
+			yearCites = [int(i) for i in citation['cc']]
+			yearCites = yearCites[int(citation['sort-year'])-1938:]
+			temp['Citations Rate'] = sum(yearCites) / len(yearCites)
+		except KeyError:
+			temp['Citations in Past Year'] = 0
+			temp['Citations Rate'] = 0
+		recordsCites[scopusId] = temp
+	return recordsCites
+

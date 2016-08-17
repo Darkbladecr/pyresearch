@@ -1,0 +1,8 @@
+biopython==1.67
+iso-639==0.4.5
+numpy==1.8.0rc1
+openpyxl==2.3.5
+python-dateutil==1.5
+requests==2.10.0
+tqdm==4.8.3
+xmltodict==0.10.2
