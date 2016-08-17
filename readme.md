@@ -10,6 +10,9 @@ A Python script with Scopus and PubMed APIs built in to give you an overview of 
 - Author [*h*-index](https://en.wikipedia.org/wiki/H-index)
 - Journal publications
 
+![Example Data](https://github.com/Darkbladecr/pyresearch/blob/master/example%20output/example_data.png?raw=true)
+![Example Author Data](https://github.com/Darkbladecr/pyresearch/blob/master/example%20output/example_authors.png?raw=true)
+
 ## Download & Setup
 1. Download this repository's [Latest Release](https://github.com/Darkbladecr/pyresearch/archive/master.zip) and navigate Terminal to the downloaded file:
 ```
@@ -37,7 +40,7 @@ For example a search for the articles on Focused Ultrasound in the Brain could b
 
 `python pyresearch -s "Focused Ultrasound AND Brain"`
 
-![Example](https://github.com/Darkbladecr/pyresearch/blob/master/example.png?raw=true)
+![Example Terminal](https://github.com/Darkbladecr/pyresearch/blob/master/example%20output/terminal.png?raw=true)
 
 The script will go through its various steps and let you know the progress. When it is complete it will save an excel document into the same directory as the script.
 
