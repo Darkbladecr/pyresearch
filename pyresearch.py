@@ -1,7 +1,5 @@
 from optparse import OptionParser
 from Bio import Entrez, Medline
-with open('config.txt', 'r') as f:
-    Entrez.email = f.readline()
 from pubmedHelpers import getPubmedIds, parsePubmed, cyberVgamma, outputYearlyData, outputPubDataScopus, outputPubDataPubmed, saveWorksheet
 from authors import outputAuthors
 from journals import outputJournals
@@ -10,8 +8,10 @@ import numpy
 from openpyxl import Workbook
 from openpyxl.chart import LineChart, Reference, Series
 from datetime import datetime
-date = datetime.now().strftime('%Y-%m-%d')
 from tqdm import tqdm
+date = datetime.now().strftime('%Y-%m-%d')
+with open('config.txt', 'r') as f:
+    Entrez.email = f.readline()
 
 parser = OptionParser()
 parser.add_option("-s", "--search", dest="searchTerm", help="search term")
@@ -43,7 +43,7 @@ else:
 	with tqdm(total=len(publications)) as pbar:
 		while count < len(publications):
 			query = ""
-			for id in pmids[count:count+200]:
+			for id in pmids[count:count + 200]:
 				query += " OR PMID(%s)" % id
 			query = query[4:]
 			content = searchScopus(query, 0)
@@ -77,7 +77,7 @@ count = 0
 print('Gathering Articles citation data')
 with tqdm(total=len(scopusPublications)) as pbar:
 	while count < len(scopusPublications):
-		query = ",".join(scopusids[count:count+25])
+		query = ",".join(scopusids[count:count + 25])
 		content = citeMetadata2(query)
 		scopusCites.update(content)
 		count += 25
@@ -147,9 +147,9 @@ for year in range(oldestYear, 2016):
 
 c1 = LineChart()
 dates = Reference(ws, min_row=chartStart, min_col=1, max_col=1, max_row=rowNum)
-s1 = Reference(ws, min_row=chartStart-1, min_col=2, max_col=2, max_row=rowNum-1)
-s2 = Reference(ws, min_row=chartStart-1, min_col=3, max_col=3, max_row=rowNum-1)
-s3 = Reference(ws, min_row=chartStart-1, min_col=4, max_col=4, max_row=rowNum-1)
+s1 = Reference(ws, min_row=chartStart - 1, min_col=2, max_col=2, max_row=rowNum - 1)
+s2 = Reference(ws, min_row=chartStart - 1, min_col=3, max_col=3, max_row=rowNum - 1)
+s3 = Reference(ws, min_row=chartStart - 1, min_col=4, max_col=4, max_row=rowNum - 1)
 c1.series.append(Series(s1, title_from_data=True))
 c1.series.append(Series(s2, title_from_data=True))
 c1.series.append(Series(s3, title_from_data=True))
@@ -157,7 +157,7 @@ c1.set_categories(dates)
 c1.title = "Articles per year for search: %s" % options.searchTerm
 c1.y_axis.title = 'Number of Articles'
 c1.x_axis.title = 'Year'
-ws.add_chart(c1, "A%d" % (rowNum+5))
+ws.add_chart(c1, "A%d" % (rowNum + 5))
 
 orderedEntries = ['Full Author Names', 'Authors', 'Publication Date', 'Title', 'Publication Type', 'Journal Title', 'Source', 'Language', 'scopusID', 'PMID', 'Citations', 'Citations in Past Year', 'Citations Rate', 'Country of Origin']
 saveWorksheet(wb, 'Pubmed Stats', scopusPublications, options.searchTerm, orderedEntries)
