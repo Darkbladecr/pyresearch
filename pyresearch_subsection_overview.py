@@ -21,7 +21,7 @@ searchTerms = {
     "AVM": "Stereotactic AND (radiosurgery OR radiotherapy) AND (Ateriovenous malformation OR AVM)",
     "Acoustic Neuroma": "Stereotactic AND (radiosurgery OR radiotherapy) AND (Acoustic neuroma OR vestibular schwanoma)",
     "Trigeminal Neuralgia": "Stereotactic AND (radiosurgery OR radiotherapy) AND (Trigeminal Neuralgia OR Tic Douloureux)",
-    "Psychiatry": "Stereotactic AND (radiosurgery OR radiotherapy) AND (Epilepsy OR depression OR anxiety disorder OR obsessive compulsive OR obsessive compulsion)"
+    "Psychiatry": "Stereotactic AND (radiosurgery OR radiotherapy) AND (depression OR anxiety disorder OR obsessive compulsive OR obsessive compulsion)"
 }
 
 

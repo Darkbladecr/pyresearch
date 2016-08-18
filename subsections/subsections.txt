@@ -12,4 +12,6 @@ python datagather_subsection.py -s "Stereotactic AND (radiosurgery OR radiothera
 
 python datagather_subsection.py -s "Stereotactic AND (radiosurgery OR radiotherapy) AND (Trigeminal Neuralgia OR Tic Douloureux)" -i "Stereotactic_radiosurgery-2016-08-15" -t "Trigeminal Neuralgia"
 
-python datagather_subsection.py -s "Stereotactic AND (radiosurgery OR radiotherapy) AND (Epilepsy OR depression OR anxiety disorder OR obsessive compulsive OR obsessive compulsion)" -i "Stereotactic_radiosurgery-2016-08-15" -t "Psychiatry"
+python datagather_subsection.py -s "Stereotactic AND (radiosurgery OR radiotherapy) AND (Epilepsy OR depression OR anxiety disorder OR obsessive compulsive OR obsessive compulsion)" -i "Stereotactic_radiosurgery-2016-08-15" -t "Psychiatry_old”
+
+python pyresearch_subsection.py -s "Stereotactic AND (radiosurgery OR radiotherapy) AND (depression OR anxiety disorder OR obsessive compulsive OR obsessive compulsion)" -i "Stereotactic_radiosurgery-2016-08-15" -t "Psychiatry"
