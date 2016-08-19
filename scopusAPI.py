@@ -4,6 +4,7 @@ from ast import literal_eval
 import xmltodict
 import time
 import requests
+from __future__ import division
 scopusIDPrefix = 10
 with open('config.txt', 'r') as f:
     email = f.readline()
