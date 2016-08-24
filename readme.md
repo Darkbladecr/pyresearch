@@ -38,13 +38,28 @@ Open Terminal and go to the folder where you unziped the files in step 1. Then u
 
 For example a search for the articles on Focused Ultrasound in the Brain could be achived with:
 
-`python pyresearch -s "Focused Ultrasound AND Brain"`
+`python pyresearch.py -s "Focused Ultrasound AND Brain"`
+
+`-s or --search` is used for your search query.
 
 ![Example Terminal](https://github.com/Darkbladecr/pyresearch/blob/master/example%20output/terminal.png?raw=true)
 
 The script will go through its various steps and let you know the progress. When it is complete it will save an excel document into the same directory as the script.
 
 Note it takes about 1 minute per 300 results, you can cancel the script at any time with `CTRL + C`.
+
+### Adding Subsearches
+Once the general search is complete, you are able to do subsection searches by narrowing your original search term. The great benefit of this subsearch is that it reuses the data saved locally (*.npy file) which will make the search much faster. The articles found matching your query will be added as an extra worksheet onto the original excel file. Additionally, more detailed information about the subsearch (authors, journals etc.) will be outputed to the folder `subsections`. 
+
+For example, if I wanted to find all the articles based on Focused Ultrasound in the Brain for Essential Tremor I would use the following command:
+
+`python pyresearch_subsection.py -s "Focused Ultrasound AND Brain AND Essential Tremor" -t "Essential Tremor" -i "data-2016-08-23"`
+
+`-s or --search` is used for your search query.
+
+`-t or --title` is used for the worksheet title in your excel file and for the name of the ouput excel file in the subsections folder.
+
+`-i or --input` is used for the filename of your `*.xlsx` file and your `*.npy` note they must share the same name. The inital pyresearch script outputs these files, however note if you rename only one then the subsection script will not work.
 
 ## Troubleshooting
 If you get an error such as:

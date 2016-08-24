@@ -16,7 +16,6 @@ with open('config.txt', 'r') as f:
 parser = OptionParser()
 parser.add_option("-s", "--search", dest="searchTerm", help="search term")
 parser.add_option("-i", "--input", dest="input", help="Name of input file")
-parser.add_option("-d", "--data", dest="data", help="Name of numpy file")
 parser.add_option("-t", "--title", dest="title", help="Name of worksheet")
 (options, args) = parser.parse_args()
 if len(options.searchTerm) == 0:
