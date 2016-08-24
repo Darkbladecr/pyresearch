@@ -13,11 +13,8 @@ def calc_journalData(query, records):
 def outputJournals(records):
 	journalSet = distinctSet(records, 'Journal Title')
 	print('Total number of journals: %d') % len(journalSet)
-
-	journalData = list()
-	for journal in journalSet:
-		journalData.append(calc_journalData(journal, records))
-
-	journalData = sorted(journalData, key=itemgetter('Number of articles'), reverse=True)
-
+	journalData = {k: {'Journal Title': k, 'Number of articles': 0} for k in journalSet}
+	for r in records:
+		journalData[r['Journal Title']]['Number of articles'] += 1
+	journalData = sorted(journalData.values(), key=itemgetter('Number of articles'), reverse=True)
 	return journalData

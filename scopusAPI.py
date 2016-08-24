@@ -1,7 +1,6 @@
 from __future__ import division
 from urllib import urlencode
 import urllib2
-from ast import literal_eval
 import xmltodict
 import time
 import requests
@@ -9,61 +8,6 @@ scopusIDPrefix = 10
 with open('config.txt', 'r') as f:
     email = f.readline()
     scopusAPI = f.readline()
-
-
-def citeCount(PMID):
-    query = urlencode({'query': 'PMID(%s)' % PMID, 'field': 'citedby-count'})
-    url = 'http://api.elsevier.com/content/search/scopus?%s' % query
-    req = urllib2.Request(url)
-    req.add_header('X-ELS-APIKey', scopusAPI)
-    while True:
-        try:
-            resp = urllib2.urlopen(req)
-            content = literal_eval(resp.read())
-            if 'citedby-count' in content['search-results']['entry'][0]:
-                return int(content['search-results']['entry'][0]['citedby-count'])
-            return 0
-        except:
-            time.sleep(1)
-
-
-def citeMetadata(PMID, years):
-    query = urlencode({'pubmed_id': PMID, 'date': years})
-    url = 'https://api.elsevier.com/content/abstract/citations?%s' % query
-    req = urllib2.Request(url)
-    req.add_header('X-ELS-APIKey', scopusAPI)
-    req.add_header('Accept', 'text/xml')
-    content = None
-    while content is None:
-        try:
-            resp = urllib2.urlopen(req)
-            content = xmltodict.parse(resp.read())
-        except urllib2.HTTPError, e:
-            print('No citation metadata, error code - %s.') % e.code
-            if e.code == 404:
-                return {'Citations': 0, 'Citations in Past Year': 0, 'Citations Rate': 0, 'Country of Origin': 'Unknown'}
-            elif e.code == 401:
-                print('Not authenticated, check API Key or VPN connection')
-                exit(1)
-        else:
-            print('Error on Scopus API, retrying...')
-            time.sleep(1)
-    metadata = dict()
-    citations = content[
-        'abstract-citations-response']['citeColumnTotalXML']['citeCountHeader']
-    metadata['Citations'] = int(citations['grandTotal'])
-    yearCites = list()
-    for cite in citations['columnTotal']:
-        yearCites.append(int(cite))
-    metadata['Citations in Past Year'] = yearCites[-1]
-    metadata['Citations Rate'] = sum(yearCites) / len(yearCites)
-    try:
-        authid = content['abstract-citations-response']['citeInfoMatrix'][
-            'citeInfoMatrixXML']['citationMatrix']['citeInfo']['author'][0]['authid']
-        metadata['Country of Origin'] = countryOrigin(authid)
-    except:
-        metadata['Country of Origin'] = 'Unknown'
-    return metadata
 
 
 def countryOrigin(authorID):
@@ -129,40 +73,42 @@ def searchScopus(searchTerm, start=0):
 
 def parseScopus(r, array):
     pub = dict()
-    pub['Authors'] = r['dc:creator']
-    pub['Publication Date'] = r['prism:coverDisplayDate']
-    pub['Title'] = r['dc:title']
-    pub['Publication Type'] = r['subtypeDescription']
-    pub['Journal Title'] = r['prism:publicationName']
-    pub['Source'] = None
-    pub['Language'] = 'Unknown'
-    pub['scopusID'] = r['dc:identifier'][scopusIDPrefix:]
-    pub['PMID'] = r['pubmed-id']
-    try:
-        pub['Citations'] = int(r['citedby-count'])
-    except:
-        pub['Citations'] = 0
-    pub['Citations in Past Year'] = 0
-    pub['Citations Rate'] = 0
-    try:
-        pub['Country of Origin'] = r['affiliation']['affiliation-country']
-    except TypeError:
-        pub['Country of Origin'] = r['affiliation'][0]['affiliation-country']
-    except KeyError:
-        pub['Country of Origin'] = 'Unknown'
-    array.append(pub)
+    if 'dc:creator' in r:
+        pub['Authors'] = r['dc:creator']
+        pub['Publication Date'] = r['prism:coverDisplayDate']
+        pub['Title'] = r['dc:title']
+        pub['Publication Type'] = r.get('subtypeDescription', 'Article')
+        pub['Journal Title'] = r.get('prism:publicationName', 'Unknown')
+        pub['Source'] = None
+        pub['Language'] = 'Unknown'
+        pub['scopusID'] = r['dc:identifier'][scopusIDPrefix:]
+        pub['PMID'] = r['pubmed-id']
+        pub['Citations'] = int(r.get('citedby-count', 0))
+        pub['Citations in Past Year'] = 0
+        pub['Citations Rate'] = 0
+        try:
+            pub['Country of Origin'] = r['affiliation']['affiliation-country']
+        except TypeError:
+            pub['Country of Origin'] = r['affiliation'][0]['affiliation-country']
+        except KeyError:
+            pub['Country of Origin'] = 'Unknown'
+        array.append(pub)
 
 
-def citeMetadata2(query):
+def citeMetadata(query, excludeSelf=False):
     content = None
+    params = {
+        "scopus_id": query,
+        "date": "1938-2016",
+        "citation": "exclude-self"
+    }
+    if not excludeSelf:
+        del params['citation']
     while content is None:
         try:
             response = requests.get(
                 url="http://api.elsevier.com/content/abstract/citations",
-                params={
-                    "scopus_id": query,
-                    "date": "1938-2016"
-                },
+                params=params,
                 headers={
                     "Accept": "application/xml",
                     "X-ELS-APIKey": scopusAPI,
