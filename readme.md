@@ -9,9 +9,10 @@ A Python script with Scopus and PubMed APIs built in to give you an overview of 
 - Citation Index (citations per year)
 - Author [*h*-index](https://en.wikipedia.org/wiki/H-index)
 - Journal publications
+- Article country of origin
 
-![Example Data](https://github.com/Darkbladecr/pyresearch/blob/master/example%20output/example_data.png?raw=true)
-![Example Author Data](https://github.com/Darkbladecr/pyresearch/blob/master/example%20output/example_authors.png?raw=true)
+![Example Data](https://github.com/Darkbladecr/pyresearch/blob/master/screenshots/example_data.png?raw=true)
+![Example Author Data](https://github.com/Darkbladecr/pyresearch/blob/master/screenshots/example_authors.png?raw=true)
 
 ## Download & Setup
 1. Download this repository's [Latest Release](https://github.com/Darkbladecr/pyresearch/archive/master.zip) and navigate Terminal to the downloaded file:
@@ -42,7 +43,7 @@ For example a search for the articles on Focused Ultrasound in the Brain could b
 
 `-s or --search` is used for your search query.
 
-![Example Terminal](https://github.com/Darkbladecr/pyresearch/blob/master/example%20output/terminal.png?raw=true)
+![Example Terminal](https://github.com/Darkbladecr/pyresearch/blob/master/screenshots/terminal.png?raw=true)
 
 The script will go through its various steps and let you know the progress. When it is complete it will save an excel document into the same directory as the script.
 
@@ -60,6 +61,8 @@ For example, if I wanted to find all the articles based on Focused Ultrasound in
 `-t or --title` is used for the worksheet title in your excel file and for the name of the ouput excel file in the subsections folder.
 
 `-i or --input` is used for the filename of your `*.xlsx` file and your `*.npy` note they must share the same name. The inital pyresearch script outputs these files, however note if you rename only one then the subsection script will not work.
+
+![Example Subsection Terminal](https://github.com/Darkbladecr/pyresearch/blob/master/screenshots/example_subsection.png?raw=true)
 
 ## Troubleshooting
 If you get an error such as:

@@ -1,0 +1,2 @@
+python pyresearch.py -s "Focused Ultrasound AND Brain"
+python pyresearch_subsection.py -s "Focused Ultrasound AND Brain AND Essential Tremor" -t "Essential Tremor" -i "data-2016-08-23"

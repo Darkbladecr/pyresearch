@@ -92,4 +92,4 @@ ENV/
 *.paw
 *.npy
 *.xlsx
-subsections/**.*
+
