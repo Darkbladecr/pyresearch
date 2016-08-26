@@ -119,7 +119,8 @@ else:
                 content = citeMetadata(query, excludeSelf=True)
             else:
                 content = citeMetadata(query)
-            scopusCites.update(content)
+            if content is not None:
+                scopusCites.update(content)
             count += 25
             pbar.update(25)
     numpy.save('scopusCites%s.npy' % suffix, scopusCites)

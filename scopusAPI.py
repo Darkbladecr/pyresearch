@@ -121,8 +121,11 @@ def citeMetadata(query, excludeSelf=False):
             pass
             # print('Scopus Search Error, retrying...')
     recordsCites = dict()
-    citations = content['abstract-citations-response']['citeInfoMatrix'][
-        'citeInfoMatrixXML']['citationMatrix']['citeInfo']
+    try:
+        citations = content['abstract-citations-response']['citeInfoMatrix'][
+            'citeInfoMatrixXML']['citationMatrix']['citeInfo']
+    except KeyError:
+        return None
     for citation in citations:
         scopusId = citation['dc:identifier'][10:]
         temp = dict()
