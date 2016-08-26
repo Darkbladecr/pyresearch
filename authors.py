@@ -17,8 +17,9 @@ def calc_hIndex(citations):
 
 def calc_authorData(authorData, authorSet, records, authorName):
     for r in records:
-        for author in r[authorName]:
-            authorData[author]['articles'].append({'PMID': r['PMID'], 'Citations': int(r['Citations'])})
+        if r[authorName] is not None:
+            for author in r[authorName]:
+                authorData[author]['articles'].append({'PMID': r['PMID'], 'Citations': int(r['Citations'])})
     for a in authorSet:
         authorData[a]['articles'] = sorted(authorData[a]['articles'], key=itemgetter('Citations'), reverse=True)
         authorData[a]['h-index'] = calc_hIndex(authorData[a]['articles'])
@@ -52,7 +53,7 @@ def outputCountries(records):
     print('Total number of countries: %d') % len(countrySet)
     countryData = {k: {'Country': k, 'Number of articles': 0} for k in countrySet}
     for r in records:
-        countryData[r['Country of Origin']]['Number of articles'] += 1
-    del countryData[None]
+        if r['Country of Origin'] is not None:
+            countryData[r['Country of Origin']]['Number of articles'] += 1
     countryData = sorted(countryData.values(), key=itemgetter('Number of articles'), reverse=True)
     return countryData

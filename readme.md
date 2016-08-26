@@ -43,6 +43,8 @@ For example a search for the articles on Focused Ultrasound in the Brain could b
 
 `-s or --search` is used for your search query.
 
+`-f or --force` is used to add all PubMed articles, even if they are not indexed in Scopus
+
 ![Example Terminal](https://github.com/Darkbladecr/pyresearch/blob/master/screenshots/terminal.png?raw=true)
 
 The script will go through its various steps and let you know the progress. When it is complete it will save an excel document into the same directory as the script.

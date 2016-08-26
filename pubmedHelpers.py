@@ -3,7 +3,6 @@ from openpyxl.chart import LineChart, Reference, Series
 from datetime import datetime
 from sets import Set
 from collections import OrderedDict
-from operator import itemgetter
 from Bio import Entrez
 from iso639 import languages
 from tqdm import tqdm
@@ -82,9 +81,11 @@ def distinctSet(records, title):
 	for record in records:
 		if isinstance(record[title], list):
 			for item in record[title]:
-				data.add(item)
+				if item is not None:
+					data.add(item)
 		else:
-			data.add(record[title])
+			if record[title] is not None:
+				data.add(record[title])
 	return data
 
 

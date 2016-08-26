@@ -18,6 +18,7 @@ parser.add_option("-i", "--input", dest="input", help="input file")
 parser.add_option("-p", "--pmid", dest="pmid", help="input file")
 parser.add_option("-r", "--remove", dest="remove", help="Remove articles heavily self-cited")
 parser.add_option("-x", "--exclude", dest="exclude", action="store_true", default=False, help="exclude citations")
+parser.add_option("-f", "--force", dest="force", action="store_true", default=False, help="force all articles to be included")
 (options, args) = parser.parse_args()
 if len(options.searchTerm) == 0:
     print("Please input a search term with -s or --search")
@@ -81,9 +82,12 @@ else:
     print("Number of scopus articles included: %s") % len(scopusPublications)
 
     print('Merging data from Pubmed to Scopus records')
-    for i, r in tqdm(enumerate(scopusPublications)):
-        for pub in publications:
-            if pub['PMID'] == r['PMID']:
+    merged = list()
+    for pub in tqdm(publications):
+        found = False
+        for r in scopusPublications:
+            if r['PMID'] == pub['PMID']:
+                found = True
                 temp = r
                 temp['Full Author Names'] = pub['Full Author Names']
                 temp['Authors'] = pub['Authors']
@@ -91,10 +95,20 @@ else:
                 temp['Language'] = pub['Language']
                 temp['Publication Date'] = pub['Publication Date']
                 temp['Publication Subset'] = pub['Publication Type']
-                scopusPublications[i] = temp
-    numpy.save('merged_data-%s.npy' % date, scopusPublications)
+                merged.append(temp)
+        if not found and options.force:
+            temp = pub
+            temp['Authors'] = None
+            temp['scopusID'] = None
+            temp['Country of Origin'] = 'Unknown'
+            temp['Publication Subset'] = temp['Publication Type']
+            temp['Publication Type'] = None
+            merged.append(temp)
+    print("Merged total: %d") % len(merged)
+    numpy.save('merged_data-%s.npy' % date, merged)
 
-    scopusids = [v['scopusID'] for v in scopusPublications]
+    scopusPublications = merged
+    scopusids = [v['scopusID'] for v in scopusPublications if v['scopusID'] is not None]
     scopusCites = dict()
     count = 0
     print('Gathering Articles citation data')
@@ -112,17 +126,18 @@ else:
     if options.exclude:
         exit(0)
     for i, r in tqdm(enumerate(scopusPublications)):
-        scopusPublications[i]['Authors'] = scopusCites[r['scopusID']]['scopusAuthors']
-        try:
-            scopusPublications[i]['Citations'] = scopusCites[r['scopusID']]['Citations']
-            scopusPublications[i]['Citations in Past Year'] = scopusCites[r['scopusID']]['Citations in Past Year']
-            scopusPublications[i]['Citations Rate'] = scopusCites[r['scopusID']]['Citations Rate']
-        except TypeError as e:
-            print("TypeError on article %d") % i
-            print(e)
-        except KeyError as e:
-            print("KeyError on article %d") % i
-            print(e)
+        if scopusPublications[i]['Authors'] is not None:
+            scopusPublications[i]['Authors'] = scopusCites[r['scopusID']]['scopusAuthors']
+            try:
+                scopusPublications[i]['Citations'] = scopusCites[r['scopusID']]['Citations']
+                scopusPublications[i]['Citations in Past Year'] = scopusCites[r['scopusID']]['Citations in Past Year']
+                scopusPublications[i]['Citations Rate'] = scopusCites[r['scopusID']]['Citations Rate']
+            except TypeError as e:
+                print("TypeError on article %d") % i
+                print(e)
+            except KeyError as e:
+                print("KeyError on article %d") % i
+                print(e)
 
 print(len(scopusPublications))
 if options.remove:
