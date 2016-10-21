@@ -158,7 +158,7 @@ def getPubmedIds(term, start=0):
 
 def parsePubmed(records, total, array, pmids):
 	for r in tqdm(records):
-		if 'TI' in r:
+		if 'TI' in r and 'EDAT' in r:
 			pub = dict()
 			pub['Full Author Names'] = r.get('FAU', 'Unknown')
 			pub['Authors'] = r.get('AU', 'Unknown')

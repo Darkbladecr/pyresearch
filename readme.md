@@ -25,17 +25,20 @@ $ cd pyresearch-master
 2. Install all the python module requirements by using the command:
 `sudo pip install -r requirements.txt`
 
-3. Setup your `config.txt` file with your email address in the first line (required by PubMed's API) and the second line with your Scopus API key, which you can get from [dev.elsevier.com](https://dev.elsevier.com/user/login). For example:
+3. Setup your `config.txt` file with your email address in the first line (required by PubMed's API). For example:
 
 ```
 user@pyresearch.com
-f024b78838b3a32f966feaf30f4361dc97c840e7
 ```
 
 
 
 ## Basic Usage
-Open Terminal and go to the folder where you unziped the files in step 1. Then use the command line with `python pyresearch` for the search with the argument`-s OR --search "Search Term Here"`:
+Open Terminal and go to the folder where you unziped the files in step 1. This can be achieved by typing the `cd` command and dragging the unziped file.
+
+![Example cd](https://github.com/Darkbladecr/pyresearch/blob/master/screenshots/example_cd.png?raw=true)
+
+Then use the command line with `python pyresearch` for the search with the argument`-s OR --search "Search Term Here"`:
 
 For example a search for the articles on Focused Ultrasound in the Brain could be achived with:
 
@@ -73,4 +76,4 @@ Error: Exceeds the maximum number allowed for the service level and/or view
 OR
 Error: APIKey 123456789abcdef with IP address 100.100.100.80 is unrecognized or has insufficient privileges for access to this resource
 ```
-Double check that your Scopus API Key is correctly setup or has appropriate privlidges. You can try this directly on the [dev.elsevier.com](http://dev.elsevier.com/metadata.html#!/Citations_Overview/CitationsOverview) website.
+Double check that you have access to Scopus. You can try this directly on the [dev.elsevier.com](http://dev.elsevier.com/metadata.html#!/Citations_Overview/CitationsOverview) website.
