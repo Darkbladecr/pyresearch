@@ -1,4 +1,4 @@
-biopython==1.67
+biopython==1.68
 iso-639==0.4.5
 numpy==1.8.0
 openpyxl==2.3.5
