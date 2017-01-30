@@ -7,7 +7,7 @@ import requests
 scopusIDPrefix = 10
 with open('config.txt', 'r') as f:
     email = f.readline()
-scopusAPI = "b3a71de2bde04544495881ed9d2f9c5b"
+    scopusAPI = f.readline()
 
 
 def countryOrigin(authorID):
