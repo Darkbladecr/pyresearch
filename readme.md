@@ -27,7 +27,9 @@ A Python script with Scopus and PubMed APIs built in to give you an overview of 
 
 2. Install all the python module requirements by using the command:
 
-    `sudo pip install -r requirements.txt`
+    ```bash
+    sudo pip install -r requirements.txt
+    ```
 
 3. Setup your `config.txt` file with your email address in the first line (required by PubMed's API). And the second line with your [Scopus API key](https://dev.elsevier.com/). For example:
 
